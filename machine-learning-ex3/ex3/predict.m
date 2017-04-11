@@ -20,13 +20,13 @@ p = zeros(size(X, 1), 1);
 %       information see 'help max'. If your examples are in rows, then, you
 %       can use max(A, [], 2) to obtain the max for each row.
 %
-
-
-
-
-
-
-
+a1 = [ones(m, 1) X];  % Add ones to the X data matrix for a1's bias unit
+z2 = a1*Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(m, 1) a2]; % add a2's bias unit
+z3 = a2*Theta2';
+a3 = sigmoid(z3);
+[v, p] = max(a3, [], 2);
 
 
 % =========================================================================
