@@ -21,6 +21,9 @@ Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
 
 Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):end), ...
                  num_labels, (hidden_layer_size + 1));
+                 
+%size(Theta1) 25*401
+%size(Theta2) 10*26
 
 % Setup some useful variables
 m = size(X, 1);
@@ -74,6 +77,7 @@ hx = a3;              % 5000*10
 
 Temp = [ones(m,1) 2*ones(m,1) 3*ones(m,1) 4*ones(m,1) 5*ones(m,1) 6*ones(m,1) 7*ones(m,1) 8*ones(m,1) 9*ones(m,1) 10*ones(m,1)];
 Temp = Temp(:,1:K);
+%yk=(Temp==y); mx_el_eq issue on V3.8.0
 yk=bsxfun(@eq,Temp,y);% Recode the labels as vectors containing only values 0 or 1
 
 Theta1_SumOfSquares = sum(sum(Theta1(:, (2:end)).^2));
@@ -82,16 +86,26 @@ Theta2_SumOfSquares = sum(sum(Theta2(:, (2:end)).^2));
 J = sum( sum( -yk.*log(hx) - (1-yk).*log(1-hx) ) )/m + lambda*( Theta1_SumOfSquares + Theta2_SumOfSquares )/(2*m);
 
 
-% BP start
-d3 = a3 - yk; %5000*10
-d2 = d3*Theta2(:, (2:end)).*sigmoidGradient(z2); %5000*25
+% BP START
+ev3 = a3 - yk; %5000*10
+ev2 = ev3*Theta2(:, (2:end)).*sigmoidGradient(z2); %5000*25
 
-delta1 = d2'*a1;
-delta2 = d3'*a2;
+delta1 = zeros(size(Theta1));
+delta2 = zeros(size(Theta2));
+delta1 = delta1 + ev2'*a1; %25*401
+delta2 = delta2 + ev3'*a2; %10*26
 
-D1 = delta1/m;
-D2 = delta2/m;
-% BP end
+%delta1 = ev2'*a1; %25*401
+%delta2 = ev3'*a2; %10*26
+
+D1 = zeros(size(delta1));
+D1(:,1)= delta1(:,1)/m; 
+D1(:, (2:end)) = delta1(:, (2:end))/m + (lambda*Theta1(:, (2:end)))/m;
+ 
+D2 = zeros(size(delta2)); 
+D2(:,1)= delta2(:,1)/m; 
+D2(:, (2:end)) = delta2(:, (2:end))/m + (lambda*Theta2(:, (2:end)))/m;
+% BP END
 
 Theta1_grad = D1;
 Theta2_grad = D2;
@@ -102,6 +116,5 @@ Theta2_grad = D2;
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
 
 end
