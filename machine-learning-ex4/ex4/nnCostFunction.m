@@ -92,8 +92,8 @@ ev2 = ev3*Theta2(:, (2:end)).*sigmoidGradient(z2); %5000*25
 
 delta1 = zeros(size(Theta1));
 delta2 = zeros(size(Theta2));
-delta1 = delta1 + ev2'*a1; %25*401
-delta2 = delta2 + ev3'*a2; %10*26
+delta1 = ev2'*a1; %25*401
+delta2 = ev3'*a2; %10*26
 
 %delta1 = ev2'*a1; %25*401
 %delta2 = ev3'*a2; %10*26
