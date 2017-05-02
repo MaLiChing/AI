@@ -75,8 +75,11 @@ z3 = a2*Theta2';
 a3 = sigmoid(z3);     % a3 = h(x)
 hx = a3;              % 5000*10
 
-Temp = [ones(m,1) 2*ones(m,1) 3*ones(m,1) 4*ones(m,1) 5*ones(m,1) 6*ones(m,1) 7*ones(m,1) 8*ones(m,1) 9*ones(m,1) 10*ones(m,1)];
-Temp = Temp(:,1:K);
+%Temp = [ones(m,1) 2*ones(m,1) 3*ones(m,1) 4*ones(m,1) 5*ones(m,1) 6*ones(m,1) 7*ones(m,1) 8*ones(m,1) 9*ones(m,1) 10*ones(m,1)];
+%Temp = Temp(:,1:K);
+for i=1:K
+  Temp(:,i)=i*ones(m,1);
+end
 %yk=(Temp==y); mx_el_eq issue on V3.8.0
 yk=bsxfun(@eq,Temp,y);% Recode the labels as vectors containing only values 0 or 1
 
